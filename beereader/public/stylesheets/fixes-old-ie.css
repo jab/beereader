@@ -1,0 +1,86 @@
+.wrap {
+width: 1000px;
+}
+
+body.stock #header .wrap {
+width: 720px;
+}
+
+#sidebar {
+width: 279px;
+overflow: hidden;
+}
+
+li.entry .entry-content {
+margin-left: 7px;
+width: 485px;
+}
+
+#feed-search input.text {
+width: 14em;
+}
+
+#save-preset input.text {
+width: 11em;
+}
+
+li.entry .entry-meta li.scores .expander-content {
+width: 15em;
+}
+
+li.entry .entry-footer .dismiss-widget {
+margin: 0.5em 0 0 -14px;
+}
+
+/* Make .png images honor alpha transparency */
+.sidebar-box-top h2,
+.sidebar-item,
+.add-filter-widget,
+#feed-search,
+#save-preset,
+#community,
+.sidebar-box-footer span {
+background-image: none;
+filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=crop, src='/images/chrome/drop-shadow.png');
+zoom: 1;
+}
+
+#feed-tools li#collapse-all a {
+background-image: none;
+filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='/images/icons/collapse-all-enabled.png');
+zoom: 1;
+}
+
+#feed-tools li#collapse-all a.disabled {
+background-image: none;
+filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='/images/icons/collapse-all-disabled.png');
+zoom: 1;
+}
+
+#feed-tools li#expand-all a {
+background-image: none;
+filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='/images/icons/expand-all-enabled.png');
+zoom: 1;
+}
+
+#feed-tools li#expand-all a.disabled {
+background-image: none;
+filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='/images/icons/expand-all-disabled.png');
+zoom: 1;
+}
+
+.add-filter-button {
+padding: 0 0 0.8em 20px;
+margin: 0.8em 0 0;
+background-image: none;
+filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=crop, src='/images/icons/tiny-plusbutton.png');
+zoom: 1;
+}
+
+.save-feed-button {
+padding: 0 0 0.8em 20px;
+margin: 0.8em 0 0;
+background-image: none;
+filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=crop, src='/images/icons/add-jug.png');
+zoom: 1;
+}

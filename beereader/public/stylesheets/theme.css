@@ -1,0 +1,158 @@
+/*-----------------------
+General styles
+-----------------------*/
+body {
+font-family: Verdana, Arial;
+text-align:left !important; /* override blueprint's ie.css */
+min-width: 1000px;
+}
+
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6 {
+font-family: Helvetica, Verdana, Arial;
+}
+
+a {
+color: #12c;
+text-decoration: none;
+outline: none !important; /* avoid ugly dotted border for Firefox */
+}
+
+a:hover {
+text-decoration: underline;
+}
+
+a img {
+border: none; 
+}
+
+div {
+outline: none !important; /* avoid ugly dotted border for Firefox, when listeners are added via js */
+}
+
+/*-----------------------
+Reader styles
+-----------------------*/
+
+#reader-entries {
+margin: 0;
+padding: 0;
+}
+
+/*-----------------------
+Basic hAtom styles
+-----------------------*/
+.hentry {
+list-style-type: none;
+position: relative;
+border-bottom: 2px solid #bebfbf;
+padding: 18px 0 0;
+width: 100%;
+}
+
+/* .hentry is self-clearing */
+.hentry:after {
+content: ".";
+display: block;
+height: 0;
+clear: both;
+visibility: hidden;
+}
+
+.hentry {
+display: inline-block; /* IE 7 */
+}
+
+.hentry {
+display: block;
+}
+
+.hentry .entry-title {
+font-size: 1.44em;
+padding-bottom: 0;
+margin-bottom: 0;
+}
+
+.hentry .entry-title,
+.hentry .entry-title a {
+color: #0a0a0a;
+}
+
+.hentry .entry-source {
+font-size: .88em;
+color: #555;
+padding-bottom: 1em;
+display: block;
+}
+
+.hentry .entry-content {
+width: 40.4em;
+min-width: 485px;
+padding: 0 3% 9px 3%;
+margin: 0 2% 0 15px;
+position: relative;
+float: left;
+overflow: hidden;
+min-height: 45px; /*whatever we need to prevent overlap in the left icons */
+}
+
+.hentry .entry-metadata {
+width: 155px;
+float: left;
+margin: 0;
+padding: 0;
+}
+
+.hentry .entry-meta .updated, 
+.hentry .entry-meta .author, 
+.hentry .entry-meta .entry-tags {
+margin: 0;
+padding: 4px 0;
+border-bottom: 1px solid #e7e7e7;
+color: #555;
+}
+
+/* the publication or update time of the article */ 
+.hentry .entry-meta .updated {
+color: #7c5061;
+margin-top: 15px;
+}
+
+/* the author of the article */
+.hentry .entry-meta .author {
+display: block;
+padding: 0 0 0 20px;
+background: url(/images/icons/author-icon-14x14-disabled.png) 0 50% no-repeat;
+overflow: hidden;
+}
+
+.hentry .entry-meta:hover .author {
+background: url(/images/icons/author-icon-14x14.png) 0 50% no-repeat;    
+}
+
+/* article tags */
+.hentry .entry-meta .entry-tags {
+list-style-type: none;
+}
+
+.hentry .entry-meta .entry-tags,
+.hentry .entry-meta .entry-tags .entry-tag {
+margin: 0;
+padding: 0;
+border-bottom: 0 none transparent;
+}
+
+.hentry .entry-meta .entry-tags .entry-tag {
+display: block;
+padding: 0 0 0 20px;
+background: url(/images/icons/tag-16x16-disabled.png) 0 50% no-repeat;
+overflow: hidden;
+}
+
+.hentry .entry-meta:hover .entry-tags .entry-tag {
+background: url(/images/icons/tag-16x16.png) 0 50% no-repeat;    
+}
