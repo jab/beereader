@@ -2,3 +2,4 @@
 beereader.egg-info
 data
 .DS_Store
+*.swp
