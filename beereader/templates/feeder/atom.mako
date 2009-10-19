@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<%page args="feed, alt_url" />
+<%page args="feed, alt_url=None" />
 ##
 ## renders an Atom feed
 ##
@@ -15,12 +15,12 @@
 ## 
 ## each entry contains the following properties:
 ## title
-## id
-## permalink
-## source_name
+## item_id
+## link
+## source_title
 ## source_url
-## author_name
-## content
+## author
+## summary
 ## timestamp (datetime)
 ## tags (list)
 ##
@@ -44,7 +44,7 @@
   
   %for entry in feed.entries:
   <entry>
-    <id>${entry.id}</id>
+    <id>${entry.item_id}</id>
     
     <title type="html">
       <![CDATA[${entry.title or 'Untitled Article' | n, unicode }]]>
@@ -54,21 +54,24 @@
       <updated>${entry.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')}</updated>
     %endif
 
-    %if entry.author_name:
+    %if entry.author:
       <author>
-        <name>${entry.author_name | n, unicode }</name>
+        <name>${entry.author | n, unicode }</name>
       </author>
     %endif
 
-    <link rel="alternate" href="${entry.permalink}" />
+    <link rel="alternate" href="${entry.link}" />
     
-    %for tag in entry.get('tags', []):
-    <category scheme="${c.site_url}" term="${tag | n, unicode }" />
-    %endfor
+    ## XXX NewsItemRefs don't have tags
+    %if 'tags' in entry:
+      %for tag in entry.tags:
+      <category scheme="${c.site_url}" term="${tag | n, unicode }" />
+      %endfor
+    %endif
     
-    <content type="html">
-     <![CDATA[${entry.content | n, unicode }]]>
-    </content>
+    <summary type="html">
+     <![CDATA[${entry.summary | n, unicode }]]>
+    </summary>
   
   </entry>
   %endfor

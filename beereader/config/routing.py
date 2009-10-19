@@ -11,7 +11,7 @@ def bucket_expand(kw):
     bucket = kw.get('bucket', None)
     if bucket:
         del kw['bucket']
-        kw['id'] = bucket.uri 
+        kw['id'] = bucket.id
     return kw
 
 def make_map():
@@ -36,6 +36,10 @@ def make_map():
     
     map.connect('bucket_latest_items', '/api/bucket/*(id)/items/by_date',
                 controller='bucketreader', action='get_batch',
+                _filter=bucket_expand)
+
+    map.connect('bucket_latest_items_atom', '/api/bucket/*(id)/items/by_date/atom',
+                controller='bucketfeeder', action='atom',
                 _filter=bucket_expand)
 
     map.connect('item_html', '/api/item/{id}/html',

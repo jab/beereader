@@ -3,6 +3,15 @@
 ##
 
 ##
+## extra stuff to put in the head 
+##
+<%def name="extra_head()">
+  ## link for atom feed
+  <link rel="alternate" type="application/atom+xml"
+    href="${h.url_for('bucket_latest_items_atom', id=c.bucketid)}" />
+</%def>
+
+##
 ## scripts that are necessary to use the reader
 ##
 <%def name="extra_javascripts()">
@@ -31,7 +40,11 @@
 ## basic pager
 ##
 <%def name="page_controls()">
-  <a class="reader-more-button" href="${c.reader_batch.next}">more</a>
+  %if 'next' in c.reader_batch:
+    <a class="reader-more-button enabled" href="${c.reader_batch.next}">more</a>
+  %else:
+    <a class="reader-more-button" href="">no more</a>
+  %endif
 </%def>
 
 
@@ -43,6 +56,6 @@
   from beereader.controllers.bucketreader import get_initial_batch
   from beereader.lib.reader import init_reader_from_batch
   initial_batch = get_initial_batch(id)
-  init_reader_from_batch(initial_batch)
+  init_reader_from_batch(id, initial_batch)
   %>
 </%def>

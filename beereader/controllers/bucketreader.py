@@ -7,12 +7,13 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 from routes import url_for
 
-from melk.util.dibject import Dibject
+from melk.util.dibject import Dibject, json_sleep, json_wake
 
 from beereader.lib.base import BaseController, render
 from beereader.lib.reader import BaseReader, init_reader_from_batch, render_items_html
 from beereader.lib.util import json_response, is_ajax_request
-from beereader.model import model, ObjectNotFoundError
+from beereader.model import context as ctx
+from melkman.db.bucket import NewsBucket, NewsItemRef, view_entries_by_timestamp
 
 log = logging.getLogger(__name__)
 
@@ -30,95 +31,71 @@ class BucketreaderController(BaseReader):
         return render('/reader/standalone.mako')
         
     def get_batch(self, id):
-
-        try:
-            bucket = model.get_news_bucket_by_uri(id)
-        except ObjectNotFoundError:
+        bucket = NewsBucket.get(id, ctx)
+        if bucket is None:
             abort(404)
 
-        batch_args = _get_batch_offset()
+        batch_args = _get_batch_args()
         batch = _bucket_latest_items_batch(bucket, **batch_args)
 
         if is_ajax_request():
-            # this html section can be optionally ommitted by specifying 
+            # this html section can be optionally omitted by specifying 
             # the query argument no_html=True
             if not asbool(request.params.get('no_html', False)):
-                batch['html'] = render_items_html(batch.entries)
-
+                batch.html = render_items_html(batch.entries)
+            del batch['entries'] # XXX NewsItemRefs are not json-serializable
             return json_response(batch)
         else:
             return self._show_batch(batch)
 
 
 def get_initial_batch(id):
-    try:
-        bucket = model.get_news_bucket_by_uri(id)
-    except ObjectNotFoundError:
+    bucket = NewsBucket.get(id, ctx)
+    if bucket is None:
         abort(404)
-
-    # grab the initial batch of items...
-    batch_args = _get_batch_offset()
+    batch_args = _get_batch_args()
     return _bucket_latest_items_batch(bucket, **batch_args)
 
-    
-def _bucket_latest_items_batch(bucket, count, date=None, skip=0):
-    if count > MAX_BATCH_SIZE:
-        count = MAX_BATCH_SIZE
 
-    # grab one extra item to figure out the next batch
-    items = bucket.get_latest_news_items(count + 1, start=date, skip=skip, reverse=False)
+def _bucket_latest_items_batch(bucket, limit=DEFAULT_BATCH_SIZE, startkey=None, startkey_docid=None):
+    limit = min(limit, MAX_BATCH_SIZE)
+    query = dict(
+        limit=limit + 1, # request 1 more than limit to see if there's a next batch
+        startkey=[bucket.id, {}], # initial batch; overridden for subsequent batches below
+        endkey=[bucket.id],
+        include_docs=True,
+        descending=True,
+        )
+    if startkey is not None: # subsequent batches
+        assert startkey_docid is not None, 'startkey given with no startkey_docid'
+        query.update(startkey=startkey, startkey_docid=startkey_docid)
 
-    batch = Dibject()
-    
-    # only take the first count items
-    batch.entries = [item.uri for item in items[0:count]]
+    rows = list(view_entries_by_timestamp(ctx.db, **query))
+    if len(rows) > limit: # there's another batch after this one
+        lastrow = rows.pop()
+        next = url_for('bucket_latest_items',
+            bucket=bucket,
+            startkey=json_sleep(lastrow.key),
+            startkey_docid=lastrow.id,
+            )
+    else:
+        next = None
 
-    batch.next = _next_batch(bucket, items, count, date, skip)
-
-    return batch
-
-def _next_batch(bucket, items, count, date, skip):
-    """
-    generate the batch of items following a certain offset
-    """
-    
-    # if there was no extra item, there is no next batch
-    if len(items) != count + 1:
-        return None
-
-    # scan the items, use the latest timestamp and minimum skip
-    next_start = date
-    next_skip = skip
-    for item in items:
-        if item.timestamp == next_start:
-            next_skip += 1
-        else:
-            next_start = item.timestamp
-            next_skip = 0
-
-    bargs = dict(bucket=bucket, count=count)
-    if next_skip > 0:
-        bargs['skip'] = next_skip
-    if next_start:
-        bargs['date'] = time.mktime(next_start.timetuple())
-    
-    return url_for('bucket_latest_items', **bargs)
+    entries = [NewsItemRef.from_doc(r.doc, ctx) for r in rows]
+    return Dibject(entries=entries, next=next)
 
 
-def _get_batch_offset():
+def _get_batch_args():
     try:
-        count = int(request.params.get('count', DEFAULT_BATCH_SIZE))
+        limit = int(request.params.get('limit', DEFAULT_BATCH_SIZE))
     except:
-        count = DEFAULT_BATCH_SIZE
-
+        limit = DEFAULT_BATCH_SIZE
     try:
-        date = datetime.fromtimestamp(float(request.params.get('date', None)))
+        startkey = json_wake(request.params.get('startkey', 'null'))
     except:
-        date = None
-
+        startkey = None
     try:
-        skip = int(request.params.get('skip', None))
+        startkey_docid = request.params.get('startkey_docid', None)
     except:
-        skip = 0
-
-    return dict(count=count, date=date, skip=skip)
+        startkey_docid = None
+    return dict(limit=limit, startkey=startkey, startkey_docid=startkey_docid)

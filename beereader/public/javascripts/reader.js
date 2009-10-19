@@ -3,7 +3,6 @@ if (typeof reader == 'undefined') {
 }
 
 reader.init = function() {
-
     // take control of the 'more' button
     $('a.reader-more-button').click(
         function(evt) {
@@ -17,19 +16,19 @@ reader.display_error = function(message) {
     $('#error').text = message;
 };
 
-reader.disable_more_button = function() {
-    $('a.reader-more-button').attr('href', '');
+reader.disable_more_button = function(disabledtext) {
+    $('a.reader-more-button').text(disabledtext).attr('href', '').removeClass('enabled');
 };
 
-reader.enable_more_button = function(url) {
-    $('a.reader-more-button').attr('href', url);
+reader.enable_more_button = function(enabledtext, url) {
+    $('a.reader-more-button').text(enabledtext).attr('href', url).addClass('enabled');
 };
 
 reader.load_more = function(source_url) {
     if (!source_url)
         return;
 
-    reader.disable_more_button()
+    reader.disable_more_button('please wait...');
 
     $.ajax({
         url: source_url,
@@ -38,21 +37,24 @@ reader.load_more = function(source_url) {
         success: function(data) {
             var batch = data.content;
             reader.append_batch(batch);
-            // restore more button
-            reader.enable_more_button(batch.next);
+            if (batch.next) {
+              reader.enable_more_button('more', batch.next);
+            } else {
+              reader.disable_more_button('no more');
+            }
         },
         error: function() {
             // signal error message
             reader.display_error('Error loading more articles.')
             // restore more button to last...
-            reader.enable_more_button(source_url);
+            reader.enable_more_button('more', source_url);
         }
     });
 };
 
 reader.append_batch = function(batch) {
-    for (var i = 0, iid; iid = batch.entries[i]; i++) {
-        var entry_html = batch.html[iid];
+    for (var i=0; i < batch.html.length; ++i) {
+        var entry_html = batch.html[i];
         if (entry_html) {
             $('#reader-entries').append(entry_html);
         }

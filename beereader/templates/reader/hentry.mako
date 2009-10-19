@@ -3,7 +3,8 @@
 ##
 ## This template renders an article.
 ## The format conforms mostly to the 
-## hAtom entry spec.
+## hAtom entry spec, except where
+## noted otherwise.
 ## See: http://microformats.org/wiki/hatom
 ##
 ## The template is provided an object
@@ -11,25 +12,30 @@
 ## properties:
 ##
 ## title
-## id
-## permalink
-## source_name
+## item_id
+## link
+## source_title
 ## source_url
-## author_name
-## content
+## author
+## summary
 ## timestamp (datetime)
 ## tags (list)
 ##
+## (not used:)
+## bucket_id
+## add_time
+## document_types
+##
 
-<li id="${entry.id}" class="hentry">
+<li id="${entry.item_id}" class="hentry">
   
-  ## title and permalink
+  ## title and link
   <h2 class="entry-title">
     <% 
     entry_title = entry.title or 'Untitled Article'
     %>
-    %if entry.permalink:
-      <a href="${entry.permalink}" rel="bookmark">
+    %if entry.link:
+      <a href="${entry.link}" rel="bookmark">
         ${entry_title | n, unicode }
       </a>
     %else:
@@ -40,18 +46,16 @@
 
   ## item source
   <a class="entry-source" href="${entry.source_url}">
-    ${entry.source_name or 'Untitled Source' | n, unicode}
+    ${entry.source_title or 'Untitled Source' | n, unicode}
   </a>
 
-  ## content of article
-  <div class="entry-content">
-    ${entry.content or '[Article has no text content]' | n, unicode}
-  </div> <!-- /.entry-content -->
+  ## summary of article
+  <div class="entry-summary">
+    ${entry.summary or '[Article has no text summary]' | n, unicode}
+  </div> <!-- /.entry-summary -->
   
   ## assorted meta-data
   <div class="entry-metadata">
-    
-    ## last update time
     %if entry.timestamp:
       <abbr class="updated" title="${h.iso8601_date(entry.timestamp)}">
         ${h.pretty_date(entry.timestamp)}
@@ -60,7 +64,7 @@
     
     ## author
     <div class="author vcard">
-      <span class="fn">${entry.author_name or 'Unknown Author' | n, unicode}</span>
+      <span class="fn">${entry.author or 'Unknown Author' | n, unicode}</span>
     </div> <!-- /.author  -->
     
     ## tags

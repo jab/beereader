@@ -5,9 +5,10 @@ from datetime import datetime
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 
+from beereader.controllers.bucketreader import _bucket_latest_items_batch # XXX
 from beereader.lib.base import BaseController, render
-from beereader.lib.tidyitem import tidy_item
-from beereader.model import model, ObjectNotFoundError
+from beereader.model import context as ctx
+from melkman.db.bucket import NewsBucket
 
 from melk.util.dibject import Dibject
 
@@ -21,27 +22,26 @@ __controller__ = 'BucketFeederController'
 class BucketFeederController(BaseController):
 
     def atom(self, id):
-        return render('/feeder/atom.mako', feed=get_feed_info(id))
+        return render('/feeder/atom.mako', {'feed': get_feed(id)})
 
 
-def get_feed_info(id):
-    try:
-        bucket = model.get_news_bucket_by_uri(id)
-    except ObjectNotFoundError:
+def get_feed(id):
+    bucket = NewsBucket.get(id, ctx)
+    if bucket is None:
         abort(404)
 
     feed = Dibject()
-
     feed.id = id
     feed.title = bucket.title
-    feed.timestamp = bucket.last_modification or datetime.utcnow()
+    feed.timestamp = bucket.last_modification_date or datetime.utcnow()
 
-    count = int(request.params.get('count', DEFAULT_FEED_SIZE))
-    if count > MAX_FEED_SIZE:
-        count = MAX_FEED_SIZE
+    try:
+        limit = int(request.params.get('limit', DEFAULT_FEED_SIZE))
+    except:
+        limit = DEFAULT_FEED_SIZE
+    limit = min(limit, MAX_FEED_SIZE)
 
-    feed.entries = []
-    for item in bucket.get_latest_news_items(count):
-        feed.entries.append(tidy_item(item.details))
-        
+    batch = _bucket_latest_items_batch(bucket, limit=limit)
+    feed.entries = batch.entries
+
     return feed

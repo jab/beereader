@@ -1,5 +1,4 @@
 from pylons import config
-from melk.model import create_model_context
-from melk.model import ObjectNotFoundError, DuplicateObjectError
+from melkman.context import Context
 
-model = create_model_context(config)
+context = Context.from_yaml(config['melkman.yamlconfig'])

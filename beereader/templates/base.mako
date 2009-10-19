@@ -37,11 +37,17 @@ ${c.site_title}
 <%def name="extra_javascripts()">
 </%def>
 
-## hook to include extra stylesheets in
-## the head of the document
-<%def name="extra_stylesheets()">
+## hook to include extra stuff in
+## the head of the document (e.g stylesheets)
+<%def name="extra_head()">
 </%def>
 
+## hook for arbitrary page initialization
+<%def name="page_init()">
+</%def>
+
+
+${self.page_init()}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title>${self.title()}</title>
@@ -58,7 +64,7 @@ ${c.site_title}
     	<!--[if (lt IE 7)&(gt IE 5.5)]>
     	<link rel="stylesheet" type="text/css" href="${h.url_for('/stylesheets/fixes-old-ie.css')}" />
     <![endif]-->
-    ${self.extra_stylesheets()}
+    ${self.extra_head()}
   </head>
 
   <body>

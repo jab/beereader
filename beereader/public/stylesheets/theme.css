@@ -4,7 +4,7 @@ General styles
 body {
 font-family: Verdana, Arial;
 text-align:left !important; /* override blueprint's ie.css */
-min-width: 1000px;
+min-width: 800px;
 }
 
 h1, 
@@ -34,12 +34,16 @@ div {
 outline: none !important; /* avoid ugly dotted border for Firefox, when listeners are added via js */
 }
 
+#page-body {
+margin: 50px;
+}
+
 /*-----------------------
 Reader styles
 -----------------------*/
 
 #reader-entries {
-margin: 0;
+margin: 50px;
 padding: 0;
 }
 
@@ -89,7 +93,7 @@ padding-bottom: 1em;
 display: block;
 }
 
-.hentry .entry-content {
+.hentry .entry-summary {
 width: 40.4em;
 min-width: 485px;
 padding: 0 3% 9px 3%;
@@ -116,13 +120,11 @@ border-bottom: 1px solid #e7e7e7;
 color: #555;
 }
 
-/* the publication or update time of the article */ 
 .hentry .entry-meta .updated {
 color: #7c5061;
 margin-top: 15px;
 }
 
-/* the author of the article */
 .hentry .entry-meta .author {
 display: block;
 padding: 0 0 0 20px;
@@ -156,3 +158,39 @@ overflow: hidden;
 .hentry .entry-meta:hover .entry-tags .entry-tag {
 background: url(/images/icons/tag-16x16.png) 0 50% no-repeat;    
 }
+
+.reader-more-button {
+background-color:#FFFFFF;
+background-image:url(/images/more.gif);
+background-position:left top;
+background-repeat:repeat-x;
+border-color:#DDDDDD #AAAAAA #AAAAAA #DDDDDD;
+border-style:solid;
+border-width:1px;
+color: #ccc !important;     /* disabled looking  */
+cursor: default;            /*    by default     */
+display:block;
+font-size:14px;
+font-weight:bold;
+height:22px;
+line-height:1.5em;
+margin-bottom:6px;
+outline-color:-moz-use-text-color;
+outline-style:none;
+outline-width:medium;
+padding:6px 0;
+text-align:center;
+text-decoration:none !important;
+text-shadow:1px 1px 1px #FFFFFF;
+width:100%;
+}
+
+.enabled {
+color: #00f !important;
+cursor: pointer;
+}
+
+.enabled.reader-more-button:hover {
+background-position:left -78px;
+}
+
