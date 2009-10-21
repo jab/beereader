@@ -11,8 +11,8 @@
 ## called 'entry' with the following
 ## properties:
 ##
-## title
 ## item_id
+## title
 ## link
 ## source_title
 ## source_url

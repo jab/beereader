@@ -5,11 +5,10 @@ from datetime import datetime
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 
-from beereader.controllers.bucketreader import _bucket_latest_items_batch # XXX
 from beereader.lib.base import BaseController, render
+from beereader.lib.reader import tidy_entry
 from beereader.model import context as ctx
-from melkman.db.bucket import NewsBucket
-
+from melkman.db.bucket import NewsBucket, NewsItem, view_entries_by_timestamp
 from melk.util.dibject import Dibject
 
 log = logging.getLogger(__name__)
@@ -22,10 +21,10 @@ __controller__ = 'BucketFeederController'
 class BucketFeederController(BaseController):
 
     def atom(self, id):
-        return render('/feeder/atom.mako', {'feed': get_feed(id)})
+        return render('/feeder/atom.mako', {'feed': get_feed_info(id)})
 
 
-def get_feed(id):
+def get_feed_info(id):
     bucket = NewsBucket.get(id, ctx)
     if bucket is None:
         abort(404)
@@ -41,7 +40,18 @@ def get_feed(id):
         limit = DEFAULT_FEED_SIZE
     limit = min(limit, MAX_FEED_SIZE)
 
-    batch = _bucket_latest_items_batch(bucket, limit=limit)
-    feed.entries = batch.entries
-
+    feed.entries = _bucket_latest_items_batch(bucket, limit=limit)
     return feed
+
+
+def _bucket_latest_items_batch(bucket, limit=DEFAULT_FEED_SIZE):
+    limit = min(limit, MAX_FEED_SIZE)
+    query = dict(
+        limit=limit,
+        startkey=[bucket.id, {}],
+        endkey=[bucket.id],
+        include_docs=True,
+        descending=True,
+        )
+    entryids = [r.doc['item_id'] for r in view_entries_by_timestamp(ctx.db, **query)]
+    return [tidy_entry(i) for i in NewsItem.get_by_ids(entryids, ctx)]

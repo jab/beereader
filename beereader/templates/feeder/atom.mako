@@ -14,15 +14,17 @@
 ## entries - list of entries as described below
 ## 
 ## each entry contains the following properties:
-## title
 ## item_id
+## title
+## timestamp (datetime)
+## author
 ## link
+## tags (list)
+## summary
+## content
+
 ## source_title
 ## source_url
-## author
-## summary
-## timestamp (datetime)
-## tags (list)
 ##
 ## alt_url may be specified to provide a link to (for example)
 ## a human readable view of the feed's source
@@ -62,16 +64,23 @@
 
     <link rel="alternate" href="${entry.link}" />
     
-    ## XXX NewsItemRefs don't have tags
     %if 'tags' in entry:
       %for tag in entry.tags:
       <category scheme="${c.site_url}" term="${tag | n, unicode }" />
       %endfor
     %endif
-    
+
+    %if entry.summary:
     <summary type="html">
-     <![CDATA[${entry.summary | n, unicode }]]>
-    </summary>
+       <![CDATA[${entry.summary | n, unicode }]]>
+      </summary>
+    %endif
+  
+    %if entry.content:
+    <content type="html">
+     <![CDATA[${entry.content | n, unicode }]]>
+    </content>
+  %endif
   
   </entry>
   %endfor

@@ -28,10 +28,13 @@
 ## main list of articles
 ##
 <%def name="entries()">
+  <%
+  from beereader.lib.reader import tidy_entry
+  %>
   <ul id="reader-entries">
     ## if initial entries are specified, we immediately render them...
     %for entry in c.reader_initial_entries:
-      <%include file="hentry.mako" args="entry=entry" />
+      <%include file="hentry.mako" args="entry=tidy_entry(entry)" />
     %endfor
   </ul>
 </%def>

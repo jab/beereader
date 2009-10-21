@@ -7,8 +7,7 @@
 <%namespace name="reader" file="/reader/init.mako" />
 
 <%def name="page_init()">
-  ## set what 'bucket' should be shown to this user
-  ${reader.init_with_bucket('melk:c8a8d880-b18c-6569-749d-66d0045c58fa')}
+  ${reader.init_with_bucket('site_index')}
 </%def>
 
 <%def name="extra_head()">
