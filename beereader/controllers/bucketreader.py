@@ -1,20 +1,16 @@
-import logging
-import time
-from datetime import datetime
-
 from paste.deploy.converters import asbool
-from pylons import request, response, session, tmpl_context as c
-from pylons.controllers.util import abort, redirect_to
+from pylons import request
+from pylons.controllers.util import abort
 from routes import url_for
 
 from melk.util.dibject import Dibject, json_sleep, json_wake
-
 from beereader.lib.base import BaseController, render
 from beereader.lib.reader import BaseReader, init_reader_from_batch, render_items_html
 from beereader.lib.util import json_response, is_ajax_request
 from beereader.model import context as ctx
 from melkman.db.bucket import NewsBucket, NewsItemRef, view_entries_by_timestamp
 
+import logging
 log = logging.getLogger(__name__)
 
 DEFAULT_BATCH_SIZE = 25
