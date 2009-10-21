@@ -32,18 +32,21 @@ def make_map():
     #             id=config.get('beereader.default_bucket', None))
 
     map.connect('front_page', '/', controller='templates', action='render', 
-                template='index')
+        template='index')
     
     map.connect('bucket_latest_items', '/api/bucket/*(id)/items/by_date',
-                controller='bucketreader', action='get_batch',
-                _filter=bucket_expand)
+        controller='bucketreader', action='get_batch', _filter=bucket_expand)
 
     map.connect('bucket_latest_items_atom', '/api/bucket/*(id)/items/by_date/atom',
-                controller='bucketfeeder', action='atom',
-                _filter=bucket_expand)
+        controller='bucketfeeder', action='atom', _filter=bucket_expand)
 
-    map.connect('item_html', '/api/item/{id}/html',
-                controller='bucketreader', action='item_html')
+    map.connect('composite_opml', '/api/composite/*(id)/opml', conditions=dict(
+        method=['GET']), controller='composite', action='opml', _filter=bucket_expand)
+
+    map.connect('composite_set_opml', '/api/composite/*(id)/opml', conditions=dict(
+        method=['PUT']), controller='composite', action='set_opml', _filter=bucket_expand)
+
+    map.connect('item_html', '/api/item/{id}/html', controller='bucketreader', action='item_html')
 
     map.connect('template', '*(template)', controller='templates', action='render')
 
