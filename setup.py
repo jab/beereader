@@ -8,10 +8,10 @@ except ImportError:
 setup(
     name='beereader',
     version='0.1',
-    description='',
-    author='',
-    author_email='',
-    url='',
+    description='lightweight frontend for melkman',
+    author='Luke Tucker',
+    author_email='ltucker@openplans.org',
+    url='http://github.com/jab/beereader',
     install_requires=[
         "Pylons>=0.9.7",
         "melkman",
