@@ -132,7 +132,7 @@ def json_response(content=None, errors=None):
     if errors is not None:
         envelope['errors'] = errors
 
-    response.headers['Content-Type'] = 'application/json;charset=utf-8'
+    response.headers['Content-Type'] = 'application/json; charset=utf-8'
     return json.dumps(envelope)
 
 def iframe_json_response(*args, **kwargs):
@@ -142,6 +142,8 @@ def iframe_json_response(*args, **kwargs):
     value = value.replace(">", "&gt;")
 
     # send it back in an object envelope... in an html envelope.
-    response.headers['Content-Type'] = 'text/html;charset=utf-8'
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
     return '<html><body>%s</body></html>' % value
 
+def atomize_response():
+    response.headers['Content-Type'] = 'application/atom+xml; charset=utf-8'

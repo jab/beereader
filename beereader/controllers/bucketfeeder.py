@@ -7,6 +7,7 @@ from pylons.controllers.util import abort, redirect_to
 
 from beereader.lib.base import BaseController, render
 from beereader.lib.reader import tidy_entry
+from beereader.lib.util import atomize_response
 from beereader.model import context as ctx
 from melkman.db.bucket import NewsBucket, NewsItem, view_entries_by_timestamp
 from melk.util.dibject import Dibject
@@ -21,6 +22,7 @@ __controller__ = 'BucketFeederController'
 class BucketFeederController(BaseController):
 
     def atom(self, id):
+        atomize_response()
         return render('/feeder/atom.mako', {'feed': get_feed_info(id)})
 
 
@@ -55,3 +57,5 @@ def _bucket_latest_items_batch(bucket, limit=DEFAULT_FEED_SIZE):
         )
     entryids = [r.doc['item_id'] for r in view_entries_by_timestamp(ctx.db, **query)]
     return [tidy_entry(i) for i in NewsItem.get_by_ids(entryids, ctx)]
+
+
