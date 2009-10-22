@@ -51,7 +51,6 @@ padding: 0;
 Basic hAtom styles
 -----------------------*/
 .hentry {
-list-style-type: none;
 position: relative;
 border-bottom: 2px solid #bebfbf;
 padding: 18px 0 0;
@@ -83,17 +82,17 @@ margin-bottom: 0;
 
 .hentry .entry-title,
 .hentry .entry-title a {
+/*
 color: #0a0a0a;
+*/
 }
 
 .hentry .entry-source {
 font-size: .88em;
-color: #555;
 padding-bottom: 1em;
-display: block;
 }
 
-.hentry .entry-summary {
+.hentry .entry-content {
 width: 40.4em;
 min-width: 485px;
 padding: 0 3% 9px 3%;
@@ -111,52 +110,73 @@ margin: 0;
 padding: 0;
 }
 
-.hentry .entry-meta .updated, 
-.hentry .entry-meta .author, 
-.hentry .entry-meta .entry-tags {
-margin: 0;
+.hentry .entry-metadata .updated, 
+.hentry .entry-metadata .author, 
+.hentry .entry-metadata .tags {
+/*
 padding: 4px 0;
+margin: 0 0 5px 0;
 border-bottom: 1px solid #e7e7e7;
+*/
 color: #555;
-}
-
-.hentry .entry-meta .updated {
-color: #7c5061;
-margin-top: 15px;
-}
-
-.hentry .entry-meta .author {
-display: block;
-padding: 0 0 0 20px;
-background: url(/images/icons/author-icon-14x14-disabled.png) 0 50% no-repeat;
-overflow: hidden;
-}
-
-.hentry .entry-meta:hover .author {
-background: url(/images/icons/author-icon-14x14.png) 0 50% no-repeat;    
-}
-
-/* article tags */
-.hentry .entry-meta .entry-tags {
 list-style-type: none;
 }
 
-.hentry .entry-meta .entry-tags,
-.hentry .entry-meta .entry-tags .entry-tag {
+.hentry .entry-metadata .updated {
+/*
+color: #7c5061;
+*/
+}
+
+.hentry .entry-metadata .author {
+display: block;
+/*
+background: url(/images/icons/author-icon-14x14-disabled.png) 0 50% no-repeat;
+*/
+overflow: hidden;
+margin-top: 5px;
+}
+
+.hentry .entry-metadata:hover .author {
+/*
+background: url(/images/icons/author-icon-14x14.png) 0 50% no-repeat;    
+*/
+}
+
+/* article tags */
+.hentry .entry-metadata .tags {
+list-style-type: none;
+}
+
+.hentry .entry-metadata .tags,
+.hentry .entry-metadata .tags .tag {
 margin: 0;
 padding: 0;
 border-bottom: 0 none transparent;
 }
 
-.hentry .entry-meta .entry-tags .entry-tag {
-display: block;
-padding: 0 0 0 20px;
-background: url(/images/icons/tag-16x16-disabled.png) 0 50% no-repeat;
+.hentry .entry-metadata .tags .tag {
+padding: 0;
 overflow: hidden;
+/*
+display: block;
+background: url(/images/icons/tag-16x16-disabled.png) 0 50% no-repeat;
+*/
+display: inline;
+font-size: .75em;
+/* XXX why is the line-height non-uniform? */
+}
+.hentry .entry-metadata .tags .tag:after {
+content: ",";
+}
+.hentry .entry-metadata .tags .tag:last-child:after {
+content: "";
 }
 
-.hentry .entry-meta:hover .entry-tags .entry-tag {
+.hentry .entry-metadata:hover .tags .tag {
+/*
 background: url(/images/icons/tag-16x16.png) 0 50% no-repeat;    
+*/
 }
 
 .reader-more-button {
@@ -170,7 +190,7 @@ border-width:1px;
 color: #ccc !important;     /* disabled looking  */
 cursor: default;            /*    by default     */
 display:block;
-font-size:14px;
+font-size:1.2em;
 font-weight:bold;
 height:22px;
 line-height:1.5em;
@@ -193,4 +213,3 @@ cursor: pointer;
 .enabled.reader-more-button:hover {
 background-position:left -78px;
 }
-

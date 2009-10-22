@@ -45,14 +45,13 @@
 
 
   ## item source
-  <a class="entry-source" href="${entry.source_url}">
-    ${entry.source_title or 'Untitled Source' | n, unicode}
-  </a>
+  <div class="entry-source">
+    <a href="${entry.source_url}">${entry.source_title or 'Untitled Source' | n, unicode}</a>
+  </div>
 
-  ## summary of article
-  <div class="entry-summary">
-    ${entry.summary or '[Article has no text summary]' | n, unicode}
-  </div> <!-- /.entry-summary -->
+  <div class="entry-content">
+    ${entry.content or entry.summary or '[Article has no text summary]' | n, unicode}
+  </div> <!-- /.entry-content -->
   
   ## assorted meta-data
   <div class="entry-metadata">
@@ -69,16 +68,15 @@
     
     ## tags
     %if 'tags' in entry:
-      <ul class="entry-tags">
+      <ul class="tags">
         ## XXX here we diverge from hAtom, because they want tags to be links to  
         ## something which is odd and has no concrete meaning in the page.
         %for tag in entry.tags:
-          <li class="entry-tag">
+          <li class="tag">
             ## <a href="http://www.example.org/tags/${tag}" rel="tag">${tag | n, unicode}</a>
-            ${tag}
-          </li>
+            ${tag}</li>
         %endfor
-      </ul> <!-- /.entry-tags -->
+      </ul> <!-- /.tags -->
     %endif
   
   </div> <!-- /.entry-metadata -->
