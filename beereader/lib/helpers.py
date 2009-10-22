@@ -35,15 +35,17 @@ def pretty_date(timestamp):
     time = lt.strftime("%I:%M%p")
     time = time.lstrip('0').replace(':00', '')
 
-    if tdiff < timedelta(days=2):
-        if tdiff >= timedelta(days=1):
-            return 'yesterday at ' + time
+    if tdiff < timedelta(days=1) and lt.day == lnow.day:
         return time
 
-    elif tdiff < timedelta(days=7):
+    yesterday = lnow - timedelta(days=1)
+    if tdiff < timedelta(days=2) and lt.day == yesterday.day:
+        return 'yesterday at ' + time
+
+    if tdiff < timedelta(days=7):
         return lt.strftime('%A at ') + time
 
-    elif lt.year == lnow.year:
+    if lt.year == lnow.year:
         return lt.strftime('%a, %b %d at ') + time
 
     return lt.strftime('%a, %b %d %Y at ') + time
