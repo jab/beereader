@@ -34,8 +34,12 @@ def render_entries_html(entries):
 
 def tidy_entry(entry):
     tidied = Dibject()
-    for attr in ('item_id', 'title', 'timestamp', 'author', 'link', 'summary', 'content',
+    for attr in ('item_id', 'title', 'timestamp', 'author', 'link', 'summary',
             'source_title', 'source_url'):
         tidied[attr] = getattr(entry, attr, '')
     tidied.tags = [tag.get('term') for tag in entry.details.get('tags', ())]
+    try:
+        tidied.content = entry.details.content[0]['value']
+    except:
+        tidied.content = ''
     return tidied
