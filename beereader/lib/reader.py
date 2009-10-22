@@ -11,7 +11,7 @@ from melk.util.dibject import Dibject
 log = logging.getLogger(__name__)
 
 
-__all__ = ['BaseReader', 'init_reader_from_batch', 'render_items_html']
+__all__ = ['BaseReader', 'init_reader_from_batch', 'render_entries_html']
 
 class BaseReader(BaseController):
 
