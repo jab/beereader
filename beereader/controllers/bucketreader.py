@@ -33,7 +33,7 @@ class BucketreaderController(BaseReader):
             abort(404)
 
         batch_args = _get_batch_args()
-        entries, next = _bucket_latest_items_batch(bucket, **batch_args)
+        entries, next = _bucket_latest_entries_batch(bucket, **batch_args)
         batch = Dibject(next=next)
 
         if is_ajax_request():
@@ -53,11 +53,11 @@ def get_initial_batch(id):
     if bucket is None:
         abort(404)
     batch_args = _get_batch_args()
-    entries, next = _bucket_latest_items_batch(bucket, **batch_args)
+    entries, next = _bucket_latest_entries_batch(bucket, **batch_args)
     return Dibject(entries=entries, next=next)
 
 
-def _bucket_latest_items_batch(bucket, limit=DEFAULT_BATCH_SIZE, startkey=None, startkey_docid=None):
+def _bucket_latest_entries_batch(bucket, limit=DEFAULT_BATCH_SIZE, startkey=None, startkey_docid=None):
     limit = min(limit, MAX_BATCH_SIZE)
     query = dict(
         limit=limit + 1, # request 1 more than limit to see if there's a next batch
@@ -73,7 +73,7 @@ def _bucket_latest_items_batch(bucket, limit=DEFAULT_BATCH_SIZE, startkey=None, 
     rows = list(view_entries_by_timestamp(ctx.db, **query))
     if len(rows) > limit: # there's another batch after this one
         lastrow = rows.pop()
-        next = url_for('bucket_latest_items',
+        next = url_for('bucket_latest_entries',
             bucket=bucket,
             startkey=json_sleep(lastrow.key),
             startkey_docid=lastrow.id,

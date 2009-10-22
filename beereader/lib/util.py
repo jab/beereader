@@ -147,3 +147,6 @@ def iframe_json_response(*args, **kwargs):
 
 def atomize_response():
     response.headers['Content-Type'] = 'application/atom+xml; charset=utf-8'
+
+def opmlize_response():
+    response.headers['Content-Type'] = 'application/xml; charset=utf-8'

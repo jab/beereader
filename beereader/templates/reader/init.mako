@@ -8,7 +8,7 @@
 <%def name="extra_head()">
   ## link for atom feed
   <link rel="alternate" type="application/atom+xml"
-    href="${h.url_for('bucket_latest_items_atom', id=c.bucketid)}" />
+    href="${h.url_for('bucket_latest_entries_atom', id=c.bucketid)}" />
 </%def>
 
 ##

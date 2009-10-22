@@ -42,11 +42,11 @@ def get_feed_info(id):
         limit = DEFAULT_FEED_SIZE
     limit = min(limit, MAX_FEED_SIZE)
 
-    feed.entries = _bucket_latest_items_batch(bucket, limit=limit)
+    feed.entries = _bucket_latest_entries_batch(bucket, limit=limit)
     return feed
 
 
-def _bucket_latest_items_batch(bucket, limit=DEFAULT_FEED_SIZE):
+def _bucket_latest_entries_batch(bucket, limit=DEFAULT_FEED_SIZE):
     limit = min(limit, MAX_FEED_SIZE)
     query = dict(
         limit=limit,

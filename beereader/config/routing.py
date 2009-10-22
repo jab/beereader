@@ -34,10 +34,10 @@ def make_map():
     map.connect('front_page', '/', controller='templates', action='render', 
         template='index')
     
-    map.connect('bucket_latest_items', '/api/bucket/*(id)/items/by_date',
+    map.connect('bucket_latest_entries', '/api/bucket/*(id)/entries/by_date',
         controller='bucketreader', action='get_batch', _filter=bucket_expand)
 
-    map.connect('bucket_latest_items_atom', '/api/bucket/*(id)/items/by_date/atom',
+    map.connect('bucket_latest_entries_atom', '/api/bucket/*(id)/entries/by_date/atom',
         controller='bucketfeeder', action='atom', _filter=bucket_expand)
 
     map.connect('composite_opml', '/api/composite/*(id)/opml', conditions=dict(
@@ -46,7 +46,7 @@ def make_map():
     map.connect('composite_set_opml', '/api/composite/*(id)/opml', conditions=dict(
         method=['PUT']), controller='composite', action='set_opml', _filter=bucket_expand)
 
-    map.connect('item_html', '/api/item/{id}/html', controller='bucketreader', action='item_html')
+    map.connect('entry_html', '/api/entry/{id}/html', controller='bucketreader', action='entry_html')
 
     map.connect('template', '*(template)', controller='templates', action='render')
 

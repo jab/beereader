@@ -20,7 +20,7 @@ class BaseReader(BaseController):
         Renders a news entry in HTML
         """
         entry = NewsItem.get(id, ctx)
-        if item is None:
+        if entry is None:
             abort(404)
         return render('reader/hentry.mako', {'entry': tidy_entry(entry)})
 
