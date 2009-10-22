@@ -43,7 +43,7 @@
 ## basic pager
 ##
 <%def name="page_controls()">
-  %if 'next' in c.reader_batch:
+  %if c.reader_batch.next:
     <a class="reader-more-button enabled" href="${c.reader_batch.next}">more</a>
   %else:
     <a class="reader-more-button" href="">no more</a>
