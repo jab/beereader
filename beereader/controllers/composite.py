@@ -8,7 +8,6 @@ from beereader.lib.util import get_posted_data, opmlize_response
 from beereader.model import context as ctx
 from melkman.db.composite import Composite
 from melkman.db.remotefeed import RemoteFeed
-from melkman.fetch import request_feed_index
 from melkman.green import sleep
 from melk.util.opml import dump_opml, feeds_in_opml
 
