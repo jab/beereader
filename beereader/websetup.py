@@ -1,8 +1,7 @@
 """Setup the beereader application"""
-import logging
-
 from beereader.config.environment import load_environment
-
+from paste.deploy.converters import asbool
+import logging
 log = logging.getLogger(__name__)
 
 def setup_app(command, conf, vars):
@@ -13,13 +12,16 @@ def setup_app(command, conf, vars):
     from melkman.db import Composite
 
     log.info('bootstrapping database and plugins')
-    ctx.bootstrap() # XXX accept a flag to possibly pass purge=True
+    purge = asbool(conf.get('beereader.purge_on_bootstrap', False))
+    ctx.bootstrap(purge=purge)
+    log.info('bootstrapped context with purge=%s' % purge)
 
-    bucketid = 'site_index'
+    bucketid = conf.get('beereader.default_bucket_id', 'site_index')
+    buckettitle = conf.get('beereader.default_bucket_title', 'My Daily Bee')
     if bucketid not in ctx.db:
-        log.info('creating main bucket at %s' % bucketid)
-        index = Composite.create(ctx, bucketid)
+        index = Composite.create(ctx, bucketid, title=buckettitle)
         index.save()
+        log.info('created default bucket "%s" at %s' % (buckettitle, bucketid))
 
     cmd = 'curl -T <opmlfile> %s:%s/api/composite/%s/opml' % (
         'localhost', '5000', bucketid) # XXX get from config

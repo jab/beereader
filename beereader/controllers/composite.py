@@ -1,16 +1,13 @@
-from couchdb import ResourceConflict, ResourceNotFound
-
+from collections import defaultdict
 from pylons import response
 from pylons.controllers.util import abort
-
 from beereader.lib.base import BaseController, render
-from beereader.lib.util import get_posted_data, opmlize_response
+from beereader.lib.util import get_posted_data, json_response, opmlize_response
 from beereader.model import context as ctx
 from melkman.db.composite import Composite
-from melkman.db.remotefeed import RemoteFeed
+from melkman.db.remotefeed import RemoteFeed, get_or_immediate_create_by_url
 from melkman.green import sleep
 from melk.util.opml import dump_opml, feeds_in_opml
-
 import logging
 log = logging.getLogger(__name__)
 
@@ -46,36 +43,32 @@ class CompositeController(BaseController):
             log.error(traceback.format_exc())
             abort(400)
         
+        result = defaultdict(list)
         oldfeeds = set(i.url for i in composite.subscriptions.itervalues())
         remove = oldfeeds - feeds
         for url in remove:
-            try:
-                feed = RemoteFeed.get_by_url(url, ctx)
-                if feed is not None:
-                    composite.unsubscribe(feed)
-                    log.debug('Unsubscribed composite "%s" from %s' % (id, url))
-                else:
-                    raise ResourceNotFound('Could not get RemoteFeed for %s' % url)
-            except ResourceNotFound, e:
-                log.warn(e)
+            feed = RemoteFeed.get_by_url(url, ctx)
+            if feed is not None:
+                composite.unsubscribe(feed)
+                result['unsubscribed'].append(url)
+                log.debug('Unsubscribed composite "%s" from %s' % (id, url))
+            else:
+                result['unsubscribe_failed'].append(url)
+                log.error('Expected composite "%s" to have RemoteFeed for %s' % (id, url))
 
         for url in feeds:
-            feed = RemoteFeed.get_by_url(url, ctx)
-            if feed is None:
-                # XXX would be nice to have a get_or_create method
-                try:
-                    feed = RemoteFeed.create_from_url(url, ctx)
-                    feed.save()
-                    log.debug('Created RemoteFeed for %s' % url)
-                except ResourceConflict:
-                    feed = RemoteFeed.get_by_url(url, ctx)
-                    if feed is None:
-                        log.error('Could not get or create feed for %s' % url)
-                        raise
-
             if url not in oldfeeds:
+                feed = get_or_immediate_create_by_url(url, ctx)
+                if feed is None:
+                    result['subscribe_failed'].append(url)
+                    log.warn('Could not get or create feed for %s' % url)
+                    continue
                 composite.subscribe(feed)
+                result['subscribed'].append(url)
                 log.debug('Subscribed composite "%s" to %s' % (id, url))
+            else:
+                result['unchanged'].append(url)
 
         composite.save()
-        log.debug('Composite "%s" has been saved' % id)
+        log.debug('Composite "%s" saved' % id)
+        return json_response(result)

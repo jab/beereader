@@ -6,6 +6,7 @@ from pylons.controllers import WSGIController
 from pylons.templating import render_mako as render
 from pylons import config, tmpl_context as c
 from paste.request import construct_url
+from paste.deploy.converters import asbool
 
 class BaseController(WSGIController):
 
@@ -23,9 +24,10 @@ class BaseController(WSGIController):
         # and set up some additional template 'globals'
         c.site_url = base_url
         c.this_url = this_url
-        c.site_title = config.get('beereader.site_title', 'My Daily Bee')
+        c.site_title = config.get('beereader.site_title', 'Beereader')
+        c.default_bucket_id = config.get('beereader.default_bucket_id', 'site_index')
         c.google_ajax_api_key = config.get('beereader.google_ajax_api_key', '')
-        c.local_resources_only = config.get('beereader.local_resources_only', True)
+        c.local_resources_only = asbool(config.get('beereader.local_resources_only', True))
 
         # WSGIController.__call__ dispatches to the Controller method
         # the request is routed to. This routing information is

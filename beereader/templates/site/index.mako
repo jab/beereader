@@ -7,7 +7,11 @@
 <%namespace name="reader" file="/reader/init.mako" />
 
 <%def name="page_init()">
-  ${reader.init_with_bucket('site_index')}
+  ${reader.init_with_bucket(c.default_bucket_id)}
+</%def>
+
+<%def name="title()">
+  ${reader.title()}
 </%def>
 
 <%def name="extra_head()">

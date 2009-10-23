@@ -5,7 +5,7 @@ from pylons.controllers.util import abort, redirect_to
 
 from beereader.lib.base import BaseController, render
 from beereader.model import context as ctx
-from melkman.db.bucket import NewsItem
+from melkman.db.bucket import NewsBucket, NewsItem
 from melk.util.dibject import Dibject
 
 log = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ class BaseReader(BaseController):
         return render('reader/hentry.mako', {'entry': tidy_entry(entry)})
 
 def init_reader_from_batch(bucketid, batch):
-    c.bucketid = bucketid
+    c.bucket = NewsBucket.get(bucketid, ctx)
     c.reader_batch = batch
     c.reader_initial_entries = batch.entries
 
@@ -37,7 +37,10 @@ def tidy_entry(entry):
     for attr in ('item_id', 'title', 'timestamp', 'author', 'link', 'summary',
             'source_title', 'source_url'):
         tidied[attr] = getattr(entry, attr, '')
-    tidied.tags = [tag.get('term') for tag in entry.details.get('tags', ())]
+    try:
+        tidied.tags = [tag.get('term') for tag in entry.details.get('tags', ()) if tag.get('term')]
+    except:
+        tidied.tags = []
     try:
         tidied.content = entry.details.content[0]['value']
     except:

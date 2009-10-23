@@ -29,7 +29,7 @@ def make_map():
 
     # map.connect('front_page', '/',
     #             controller='bucketreader', action='view',
-    #             id=config.get('beereader.default_bucket', None))
+    #             id=config.get('beereader.default_bucket_id', 'site_index'))
 
     map.connect('front_page', '/', controller='templates', action='render', 
         template='index')

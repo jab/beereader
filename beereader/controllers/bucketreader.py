@@ -5,7 +5,7 @@ from routes import url_for
 
 from melk.util.dibject import Dibject, json_sleep, json_wake
 from beereader.lib.base import BaseController, render
-from beereader.lib.reader import BaseReader, init_reader_from_batch, render_entries_html
+from beereader.lib.reader import BaseReader, init_reader_from_batch, render_entries_html, tidy_entry
 from beereader.lib.util import json_response, is_ajax_request
 from beereader.model import context as ctx
 from melkman.db.bucket import NewsBucket, NewsItem, NewsItemRef, view_entries_by_timestamp
@@ -81,8 +81,9 @@ def _bucket_latest_entries_batch(bucket, limit=DEFAULT_BATCH_SIZE, startkey=None
     else:
         next = None
 
-    #entries = [NewsItemRef.from_doc(r.doc, ctx) for r in rows]
-    entries = [NewsItem.get(r.doc['item_id'], ctx) for r in rows]
+    #entries = [tidy_entry(NewsItemRef.from_doc(r.doc, ctx)) for r in rows]
+    entryids = [r.doc['item_id'] for r in rows]
+    entries = [tidy_entry(i) for i in NewsItem.get_by_ids(entryids, ctx)]
     return (entries, next)
 
 
