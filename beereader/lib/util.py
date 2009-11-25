@@ -6,10 +6,6 @@ try:
 except ImportError:
     import simplejson as json
 
-def is_ajax_request():
-    return ('x-requested-with' in request.headers and
-            request.headers['x-requested-with'].lower() == 'xmlhttprequest')
-
 def direct_redirect(url):
     stuff_session()
     abort(303, headers=[('Content-Type', 'text/html'), ('Location', url)])

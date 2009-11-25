@@ -6,7 +6,7 @@ from routes import url_for
 from melk.util.dibject import Dibject, json_sleep, json_wake
 from beereader.lib.base import BaseController, render
 from beereader.lib.reader import BaseReader, init_reader_from_batch, render_entries_html, tidy_entry
-from beereader.lib.util import json_response, is_ajax_request
+from beereader.lib.util import json_response
 from beereader.model import context as ctx
 from melkman.db.bucket import NewsBucket, NewsItem, NewsItemRef, view_entries_by_timestamp
 
@@ -36,7 +36,7 @@ class BucketreaderController(BaseReader):
         entries, next = _bucket_latest_entries_batch(bucket, **batch_args)
         batch = Dibject(next=next)
 
-        if is_ajax_request():
+        if request.is_xhr:
             # this html section can be optionally omitted by specifying 
             # the query argument no_html=True
             if not asbool(request.params.get('no_html', False)):
